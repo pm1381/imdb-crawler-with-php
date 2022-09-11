@@ -36,7 +36,6 @@ class Imdb{
     public function setSearchedUrl($searchedUrl)
     {
         $this->searchedUrl = $searchedUrl;
-
         return $this;
     }
 
@@ -79,13 +78,11 @@ class Imdb{
         $this->getWatchable()->setReleseDate($result['datePublished']);
         $this->getWatchable()->setTrailerUrl($result['trailer']['embedUrl']);
         $this->getWatchable()->setDuration($result['duration']);
-
         $directors = [];
         foreach ($result['director'] as $eachDirector) {
             $directors[] = new Cast($eachDirector['name'], $eachDirector['url']);
         }
         $this->getWatchable()->setDirector($directors);
-
         $creators  = [];
         foreach ($result['creator'] as $creatorData) {
             if (array_key_exists('name', $creatorData)) {
@@ -93,7 +90,6 @@ class Imdb{
             }
         }
         $this->getWatchable()->setWriter($creators);
-
         $genres = [];
         foreach ($result['genre'] as $value) {
             $genres[] = $value;
@@ -206,9 +202,7 @@ class Imdb{
         $this->setPageToDefault();
     }
 
-    public function findPictures($url = "")
-    {
-    }
+    public function findPictures($url = ""){}
 
     public function findProducers($url = "")
     {
@@ -232,6 +226,20 @@ class Imdb{
     public function setPageToDefault()
     {
         $this->setPage(Tools::manageCUrl([], [], $this->getSearchedUrl()));
+    }
+
+    public function getAllData($url = "")
+    {
+        $this->singlePageSchema($url);
+        $this->findTitle($url);
+        $this->findCountry($url);
+        $this->findBudget($url);
+        $this->findLanguages($url);
+        $this->findPictures($url);
+        $this->findCompany($url);
+        $this->findAwards($url);
+        $this->findProducers($url);
+        $this->findMusicComposer($url);
     }
 
     private function checkEmptyUrl($url)

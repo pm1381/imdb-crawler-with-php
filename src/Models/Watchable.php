@@ -7,7 +7,6 @@ use App\Databases\Database;
 class Watchable extends Database
 {
     private int $ratingCount;
-    private float $budget;
     private float $rating;
     private array $awards = [];
     private array $country = [];
@@ -26,6 +25,7 @@ class Watchable extends Database
     private string $description;
     private string $duration;
     private string $poster;
+    private string $budget;
     private WatchableType $type;
 
 
