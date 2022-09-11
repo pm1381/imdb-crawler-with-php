@@ -28,7 +28,6 @@ class Company {
     public function setUrl($url)
     {
         $this->url = $url;
-
         return $this;
     }
 
@@ -48,7 +47,6 @@ class Company {
     public function setName($name)
     {
         $this->name = $name;
-
         return $this;
     }
 }

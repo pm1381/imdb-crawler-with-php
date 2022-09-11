@@ -142,7 +142,12 @@ class Imdb{
     public function findCompany($url = "")
     {
         $this->checkEmptyUrl($url);
-        $result = Tools::getAllMatches('~<a class="ipc-metadata-list-item__list-content-item ipc-metadata-list-item__list-content-item--link" rel="" href="(.*)\?ref.*>(.*)<\/a>~iUs', $this->getPage());
+        if ($url == "") {
+            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "companycredits/";
+            $this->setPage(Tools::manageCUrl([], [], $newUrl));
+        }
+        $companiesList = Tools::getAllMatches('~<h4 class="dataHeaderWithBorder" id="production" name="production">Production Companies<\/h4>[\r\n]*\s*<ul.*<\/ul>~iUs', $this->getPage());
+        $result = Tools::getAllMatches('~<li>[\r\n]*\s*<a href="(.*)\?.*"[\r\n]*\s*>(.*)<\/a>[\r\n]*\s*<\/li>~iUs', $companiesList[0][0]);
         $data = [];
         $i = 0;
         foreach ($result[1] as $val) {
@@ -150,7 +155,7 @@ class Imdb{
             $i++;
         }
         $this->getWatchable()->setCompany($data);
-        return $result;
+        $this->setPageToDefault();
     }
 
     public function findAwards($url = "")
