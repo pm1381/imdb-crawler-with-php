@@ -5,7 +5,6 @@ namespace App\Models;
 class Movie  extends Watchable{
     private string $genre;
     private array $casts = [];
-    private string $writer;
     //watchable --> Movie --- Series --- document --- show
 
     /**
@@ -27,27 +26,7 @@ class Movie  extends Watchable{
 
         return $this;
     }
-
-    /**
-     * Get the value of writer
-     */ 
-    public function getWriter()
-    {
-        return $this->writer;
-    }
-
-    /**
-     * Set the value of writer
-     *
-     * @return  self
-     */ 
-    public function setWriter($writer)
-    {
-        $this->writer = $writer;
-
-        return $this;
-    }
-
+ 
     /**
      * Get the value of casts
      */ 

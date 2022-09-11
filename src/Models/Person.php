@@ -7,6 +7,12 @@ class Person {
     private string $url;
     private string $picture;
 
+    public function __construct($name, $url)
+    {
+        $this->setName($name);
+        $this->setUrl($url);        
+    }
+
     /**
      * Get the value of name
      */ 

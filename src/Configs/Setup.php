@@ -3,6 +3,7 @@
 use App\Databases\Database;
 use App\Databases\Generators\Pdo;
 use App\Models\Imdb;
+use App\Models\Movie;
 
 define("DIR", "");
 date_default_timezone_set("Asia/Tehran");
@@ -13,10 +14,14 @@ $search = $_GET['search'];
 
 $database = new Database();
 $database->databaseConnection(new Pdo());
-$imdb = new Imdb($search);
-// $imdb->singlePageSchema();
-// print_f($imdb->findTitle());
-// print_f($imdb->findCountry());
-// print_f($imdb->findLanguages());
-print_f($imdb->findCompany());
+$imdb = new Imdb(new Movie(), $search);
+$imdb->singlePageSchema();
+$imdb->findTitle();
+$imdb->findCountry();
+$imdb->findLanguages();
+$imdb->findCompany();
+$imdb->findAwards();
+$imdb->findProducers();
+print_f($imdb->getWatchable());
+
 // notice : when creating a property as static , that property will be the same in your code for always;

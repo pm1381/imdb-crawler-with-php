@@ -6,26 +6,27 @@ use App\Databases\Database;
 
 class Watchable extends Database
 {
-    private string $releseDate;
-    private string $trailerUrl;
-    private array $awards;//code
-    private array $country = [];
-    private string $description;
-    private string $director;
-    private array $language = [];
-    private float $rating;
     private int $ratingCount;
-    private string $esrb;
     private float $budget;
-    private int $duration;
-    private array $creator = [];
+    private float $rating;
+    private array $awards = [];
+    private array $country = [];
+    private array $director = [];
+    private array $language = [];
+    private array $writer = [];
     private array $company = [];
-    private string $title;
     private array $pictures = [];//code
+    private array $producer = []; //code
+    private string $title;
+    private string $trailerUrl;
     private string $musicComposer;// code
-    private WatchableType $type;
+    private string $esrb;
+    private string $releseDate;
     private string $url;
+    private string $description;
+    private string $duration;
     private string $poster;
+    private WatchableType $type;
 
 
     /**
@@ -387,21 +388,21 @@ class Watchable extends Database
     }
 
     /**
-     * Get the value of creator
+     * Get the value of writer
      */ 
-    public function getCreator()
+    public function getWriter()
     {
-        return $this->creator;
+        return $this->writer;
     }
 
     /**
-     * Set the value of creator
+     * Set the value of writer
      *
      * @return  self
      */ 
-    public function setCreator($creator)
+    public function setWriter($writer)
     {
-        $this->creator = $creator;
+        $this->writer = $writer;
         return $this;
     }
 
@@ -421,6 +422,25 @@ class Watchable extends Database
     public function setCompany($company)
     {
         $this->company = $company;
+        return $this;
+    }
+
+    /**
+     * Get the value of producer
+     */ 
+    public function getProducer()
+    {
+        return $this->producer;
+    }
+
+    /**
+     * Set the value of producer
+     *
+     * @return  self
+     */ 
+    public function setProducer($producer)
+    {
+        $this->producer = $producer;
         return $this;
     }
 }
