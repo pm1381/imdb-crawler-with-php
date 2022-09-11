@@ -142,12 +142,11 @@ class Imdb{
     public function findCompany($url = "")
     {
         $this->checkEmptyUrl($url);
-        $result = Tools::getAllMatches('~<a class="ipc-metadata-list-item__list-content-item ipc-metadata-list-item__list-content-item--link" rel="" href="/company/.*>(.*)</a>~iUs', $this->getPage());
+        $result = Tools::getAllMatches('~<a class="ipc-metadata-list-item__list-content-item ipc-metadata-list-item__list-content-item--link" rel="" href="(.*)\?ref.*>(.*)<\/a>~iUs', $this->getPage());
         $data = [];
         $i = 0;
-        foreach ($result[0] as $val) {
-            // val must be changed to url(slug);
-            $data[] = new Company(trim($val), trim($result[1][$i]));
+        foreach ($result[1] as $val) {
+            $data[] = new Company(trim($val), trim($result[2][$i]));
             $i++;
         }
         $this->getWatchable()->setCompany($data);
