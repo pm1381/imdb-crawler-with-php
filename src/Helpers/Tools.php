@@ -33,4 +33,13 @@ class Tools
         preg_match_all($regex, $page, $match);
         return $match;
     }
+
+    public static function uniteUrls($url)
+    {
+        $lastChar = substr($url, -1);
+        if ($lastChar != "/"){
+            $url .= "/";
+        }
+        return $url;
+    }
 }

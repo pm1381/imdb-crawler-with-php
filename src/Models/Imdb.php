@@ -100,7 +100,6 @@ class Imdb{
         $this->checkEmptyUrl($url);
         $result = Tools::getFirstMatch('~<script type="application\/ld\+json">(.*)<\/script>~iUs', $this->getPage());        
         $result = json_decode($result, true);
-        print_f($result);
         $this->setWatchableData($result);
     }
 
@@ -167,7 +166,7 @@ class Imdb{
             $this->setPage(Tools::manageCUrl([], [], $newUrl));
         }
         $musicTable = Tools::getAllMatches('~<h4[\r\n]*\s*name="composer" id="composer"[\r\n]*\s*class="dataHeaderWithBorder">Music by&nbsp;<\/h4>[\r\n]*\s*<table.*<\/table>~iUs', $this->getPage());
-        $result = Tools::getAllMatches('~<td class="name">[\r\n]*\s*<a href="(.*)\?ref_=ttfc_fc_cr11"[\r\n]*\s*>\s+([a-zA-Z].*)<\/a>~iUs', $musicTable[0][0]);
+        $result = Tools::getAllMatches('~<td class="name">[\r\n]*\s*<a href="(.*)\?.*"[\r\n]*\s*>\s*([a-zA-Z].*)<\/a>~iUs', $musicTable[0][0]);
         $data = [];$i = 0;
         foreach ($result[2] as $value) {
             $data[] = new Cast(trim($value), trim($result[1][$i]));

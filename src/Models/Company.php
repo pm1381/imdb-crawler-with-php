@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use App\Helpers\Tools;
+
 class Company {
     private string $name;
     private string $url;
 
     public function __construct($url, $name="")
     {
-        $this->setUrl($url);
+        $this->setUrl(Tools::uniteUrls($url));
         $this->setName($name);
     }
 
