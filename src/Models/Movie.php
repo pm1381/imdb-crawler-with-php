@@ -3,7 +3,7 @@
 namespace App\Models;
 
 class Movie  extends Watchable{
-    private string $genre;
+    private array $genre = [];
     private array $casts = [];
     //watchable --> Movie --- Series --- document --- show
 

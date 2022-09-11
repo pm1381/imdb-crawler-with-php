@@ -7,11 +7,14 @@ use App\Helpers\Tools;
 class Company {
     private string $name;
     private string $url;
+    private string $specialId;
 
     public function __construct($url, $name="")
     {
-        $this->setUrl(Tools::uniteUrls($url));
+        $url = Tools::uniteUrls($url);
+        $this->setUrl($url);
         $this->setName($name);
+        $this->setSpecialId($url);
     }
 
     /**
@@ -49,6 +52,26 @@ class Company {
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * Get the value of specialId
+     */ 
+    public function getSpecialId()
+    {
+        return $this->specialId;
+    }
+
+    /**
+     * Set the value of specialId
+     *
+     * @return  self
+     */ 
+    public function setSpecialId($specialId)
+    {
+        $urlArray = explode("/", $specialId);
+        $this->specialId = explode("co", $urlArray[2])[1];
         return $this;
     }
 }

@@ -89,10 +89,16 @@ class Imdb{
         $creators  = [];
         foreach ($result['creator'] as $creatorData) {
             if (array_key_exists('name', $creatorData)) {
-                $creators[]  = new Cast($creatorData['name'], $eachDirector['url']);
+                $creators[]  = new Cast($creatorData['name'], $creatorData['url']);
             }
         }
         $this->getWatchable()->setWriter($creators);
+
+        $genres = [];
+        foreach ($result['genre'] as $value) {
+            $genres[] = $value;
+        }
+        $this->getWatchable()->setGenre($genres);
     }
 
     public function singlePageSchema($url = "")

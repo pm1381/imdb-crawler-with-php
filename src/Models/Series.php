@@ -3,9 +3,8 @@
 namespace App\Models;
 
 class Series {
-    private string $genre;
+    private array $genre;
     private array $casts = [];
-    private string $writer;
     private array $seasons = [];
     //watchable --> Movie --- Series --- document --- show
 

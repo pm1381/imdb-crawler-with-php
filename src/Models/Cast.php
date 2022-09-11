@@ -8,7 +8,9 @@ class Cast extends Person {
     private string $specialId;
     public function __construct($name, $url)
     {
-        parent::__construct($name, Tools::uniteUrls($url));
+        $url = Tools::uniteUrls($url);
+        parent::__construct($name, $url);
+        $this->setSpeciaId($url);
     }
 
     /**
@@ -26,7 +28,8 @@ class Cast extends Person {
      */ 
     public function setSpeciaId($specialId)
     {
-        $this->specialId = $specialId;
+        $urlArray = explode("/", $specialId);
+        $this->specialId = explode("nm", $urlArray[2])[1];
         return $this;
     }
 }
