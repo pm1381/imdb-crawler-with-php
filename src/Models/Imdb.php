@@ -82,14 +82,14 @@ class Imdb{
 
         $directors = [];
         foreach ($result['director'] as $eachDirector) {
-            $directors[] = new Cast($eachDirector['name'], "");
+            $directors[] = new Cast($eachDirector['name'], $eachDirector['url']);
         }
         $this->getWatchable()->setDirector($directors);
 
         $creators  = [];
         foreach ($result['creator'] as $creatorData) {
             if (array_key_exists('name', $creatorData)) {
-                $creators[]  = new Cast($creatorData['name'], "");
+                $creators[]  = new Cast($creatorData['name'], $eachDirector['url']);
             }
         }
         $this->getWatchable()->setWriter($creators);
@@ -100,6 +100,7 @@ class Imdb{
         $this->checkEmptyUrl($url);
         $result = Tools::getFirstMatch('~<script type="application\/ld\+json">(.*)<\/script>~iUs', $this->getPage());        
         $result = json_decode($result, true);
+        print_f($result);
         $this->setWatchableData($result);
     }
 
