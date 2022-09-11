@@ -10,9 +10,9 @@ class Imdb{
     private string $searchedUrl;
     private $page;
 
-    public function __construct($url = "")
+    public function __construct(Watchable $watchable, $url = "")
     {
-        $this->watchable = new Watchable();
+        $this->watchable = $watchable;
         if ($url != "") {
             $this->setSearchedUrl($url);
             $this->setPage(Tools::manageCUrl([], [], $this->getSearchedUrl()));
@@ -77,17 +77,22 @@ class Imdb{
         $this->getWatchable()->setRatingCount($result['aggregateRating']['ratingCount']);
         $this->getWatchable()->setEsrb($result['contentRating']);
         $this->getWatchable()->setReleseDate($result['datePublished']);
-        $this->getWatchable()->setTrailerUrl($result['embedUrl']);
-        $this->getWatchable()->setDirector($result['director']['name']);
+        $this->getWatchable()->setTrailerUrl($result['trailer']['embedUrl']);
         $this->getWatchable()->setDuration($result['duration']);
+
+        $directors = [];
+        foreach ($result['director'] as $eachDirector) {
+            $directors[] = new Cast($eachDirector['name'], "");
+        }
+        $this->getWatchable()->setDirector($directors);
 
         $creators  = [];
         foreach ($result['creator'] as $creatorData) {
             if (array_key_exists('name', $creatorData)) {
-                $creators[]  = $creatorData['name'];
+                $creators[]  = new Cast($creatorData['name'], "");
             }
         }
-        $this->getWatchable()->setCreator($creators);
+        $this->getWatchable()->setWriter($creators);
     }
 
     public function singlePageSchema($url = "")
@@ -142,16 +147,63 @@ class Imdb{
         $i = 0;
         foreach ($result[0] as $val) {
             // val must be changed to url(slug);
-            $data[] = new Company($val, $result[1][$i]);
+            $data[] = new Company(trim($val), trim($result[1][$i]));
             $i++;
         }
         $this->getWatchable()->setCompany($data);
         return $result;
     }
 
-    public function findPictures($url = "")
+    public function findAwards($url = "")
     {
         $this->checkEmptyUrl($url);
+        if ($url == "") {
+            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "awards/";
+            $this->setPage(Tools::manageCUrl([], [], $newUrl));
+        }
+        $result = Tools::getAllMatches('~<td class="title_award_outcome" rowspan="\d">[\r,\n]*\s+<b>(.*)<\/b><br \/>[\r,\n]*\s+<span class="award_category">(.*)<\/span>[\r,\n]*\s+<\/td>[\r,\n]*\s+<td class="award_description">[\r,\n]+\s+([a-zA-Z].*)<br \/>~iUs', $this->getPage());
+        $data = [];
+        $i = 0;
+        if (count($result) == 4) {
+            foreach ($result[1] as $value) {
+                $data[] = [
+                    'status' => trim($value),
+                    'award' => trim($result[2][$i]),
+                    'for' => trim($result[3][$i]),
+                ];
+                $i++;
+            }
+        }
+        $this->getWatchable()->setAwards($data);
+        $this->setPageToDefault();
+    }
+
+    public function findPictures($url = "")
+    {
+    }
+
+    public function findProducers($url = "")
+    {
+        $this->checkEmptyUrl($url);
+        if ($url == "") {
+            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "fullcredits/";
+            $this->setPage(Tools::manageCUrl([], [], $newUrl));
+        }
+        $producersTable = Tools::getAllMatches('~<h4[\r\n]*\s*name="producer" id="producer".*<\/h4>[\r\n]*\s*<table .*<\/table>~iUs', $this->getPage());
+        $result = Tools::getAllMatches('~<tr>[\r\n]*\s*<td class="name">[\r\n]*\s*<a href="(.*)\?.*"[\r\n]*\s*>\s*([a-zA-Z].*)[\r\n]+\s*.*~iUs', $producersTable[0][0]);
+        $data = [];
+        $i = 0;
+        foreach ($result[1] as $value) {
+            $data[] = new Cast($result[2][$i], $value);
+            $i++;
+        }
+        $this->getWatchable()->setProducer($data);
+        $this->setPageToDefault();
+    }
+
+    public function setPageToDefault()
+    {
+        $this->setPage(Tools::manageCUrl([], [], $this->getSearchedUrl()));
     }
 
     private function checkEmptyUrl($url)
