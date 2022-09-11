@@ -1,0 +1,5 @@
+vendor
+composer.lock
+./vs-code
+node_modules
+./github
