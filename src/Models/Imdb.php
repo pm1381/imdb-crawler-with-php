@@ -158,6 +158,24 @@ class Imdb{
         $this->setPageToDefault();
     }
 
+    public function findMusicComposer($url = "")
+    {
+        $this->checkEmptyUrl($url);
+        if ($url == "") {
+            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "fullcredits/";
+            $this->setPage(Tools::manageCUrl([], [], $newUrl));
+        }
+        $musicTable = Tools::getAllMatches('~<h4[\r\n]*\s*name="composer" id="composer"[\r\n]*\s*class="dataHeaderWithBorder">Music by&nbsp;<\/h4>[\r\n]*\s*<table.*<\/table>~iUs', $this->getPage());
+        $result = Tools::getAllMatches('~<td class="name">[\r\n]*\s*<a href="(.*)\?ref_=ttfc_fc_cr11"[\r\n]*\s*>\s+([a-zA-Z].*)<\/a>~iUs', $musicTable[0][0]);
+        $data = [];$i = 0;
+        foreach ($result[2] as $value) {
+            $data[] = new Cast(trim($value), trim($result[1][$i]));
+            $i++;
+        }
+        $this->getWatchable()->setMusicComposer($data);
+        $this->setPageToDefault();
+    }
+
     public function findAwards($url = "")
     {
         $this->checkEmptyUrl($url);

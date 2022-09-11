@@ -16,10 +16,10 @@ class Watchable extends Database
     private array $writer = [];
     private array $company = [];
     private array $pictures = [];//code
+    private array $musicComposer = [];
     private array $producer = [];
     private string $title;
     private string $trailerUrl;
-    private string $musicComposer;// code
     private string $esrb;
     private string $releseDate;
     private string $url;

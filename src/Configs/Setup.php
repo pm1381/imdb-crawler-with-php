@@ -22,6 +22,7 @@ $imdb->findLanguages();
 $imdb->findCompany();
 $imdb->findAwards();
 $imdb->findProducers();
+$imdb->findMusicComposer();
 print_f($imdb->getWatchable());
 
 // notice : when creating a property as static , that property will be the same in your code for always;
