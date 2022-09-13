@@ -4,7 +4,7 @@ namespace App\Models;
 
 class Movie  extends Watchable{
     private array $genre = [];
-    private array $casts = [];
+    private array $actors = [];
     //watchable --> Movie --- Series --- document --- show
 
     /**
@@ -26,24 +26,23 @@ class Movie  extends Watchable{
 
         return $this;
     }
- 
+
     /**
-     * Get the value of casts
+     * Get the value of actors
      */ 
-    public function getCasts()
+    public function getActors()
     {
-        return $this->casts;
+        return $this->actors;
     }
 
     /**
-     * Set the value of casts
+     * Set the value of actors
      *
      * @return  self
      */ 
-    public function setCasts($casts)
+    public function setActors($actors)
     {
-        $this->casts = $casts;
-
+        $this->actors = $actors;
         return $this;
     }
 }

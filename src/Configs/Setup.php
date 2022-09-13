@@ -15,7 +15,9 @@ $search = $_GET['search'];
 $database = new Database();
 $database->databaseConnection(new Pdo());
 $imdb = new Imdb(new Movie(), $search);
-$imdb->getAllData();
-print_f($imdb->getWatchable());
+$imdb->singlePageSchema();
+$imdb->findCompany();
+// $imdb->getAllData();
+// print_f($imdb->getWatchable());
 
 // notice : when creating a property as static , that property will be the same in your code for always;

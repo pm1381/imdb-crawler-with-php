@@ -148,8 +148,9 @@ class Imdb{
             $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "companycredits/";
             $this->setPage(Tools::manageCUrl([], [], $newUrl));
         }
-        $companiesList = Tools::getAllMatches('~<h4 class="dataHeaderWithBorder" id="production" name="production">Production Companies<\/h4>[\r\n]*\s*<ul.*<\/ul>~iUs', $this->getPage());
-        $result = Tools::getAllMatches('~<li>[\r\n]*\s*<a href="(.*)\?.*"[\r\n]*\s*>(.*)<\/a>[\r\n]*\s*<\/li>~iUs', $companiesList[0][0]);
+        $companiesList = Tools::getAllMatches('~<h4 class="dataHeaderWithBorder" id="production" name="production">Production Companies<\/h4>[\r\n]*\s*<ul .*<\/ul>~Us', $this->getPage());
+        //---awards
+        $result = Tools::getAllMatches('~<li>\s*<a href="(.*)\?.*"\s*>([A-Za-z0-9 ]*)<\/a>~iUs', $companiesList[0][0]);
         $data = [];
         $i = 0;
         foreach ($result[1] as $val) {
@@ -167,8 +168,8 @@ class Imdb{
             $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "fullcredits/";
             $this->setPage(Tools::manageCUrl([], [], $newUrl));
         }
-        $musicTable = Tools::getAllMatches('~<h4[\r\n]*\s*name="composer" id="composer"[\r\n]*\s*class="dataHeaderWithBorder">Music by&nbsp;<\/h4>[\r\n]*\s*<table.*<\/table>~iUs', $this->getPage());
-        $result = Tools::getAllMatches('~<td class="name">[\r\n]*\s*<a href="(.*)\?.*"[\r\n]*\s*>\s*([a-zA-Z].*)<\/a>~iUs', $musicTable[0][0]);
+        $musicTable = Tools::getAllMatches('~<h4\s*name="composer" id="composer"\s*class=".*">.*<\/h4>\s*<table.*<\/table>~iUs', $this->getPage());
+        $result = Tools::getAllMatches('~<td class=".*">\s*<a href="(.*)\?.*"\s*>\s*([a-zA-Z].*)<\/a>~iUs', $musicTable[0][0]);
         $data = [];$i = 0;
         foreach ($result[2] as $value) {
             $data[] = new Cast(trim($value), trim($result[1][$i]));
@@ -220,6 +221,17 @@ class Imdb{
             $i++;
         }
         $this->getWatchable()->setProducer($data);
+        $this->setPageToDefault();
+    }
+
+    public function findActors($url = "")
+    {
+        $this->checkEmptyUrl($url);
+        if ($url == "") {
+            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "fullcredits/";
+            $this->setPage(Tools::manageCUrl([], [], $newUrl));
+        }
+       $castTable = Tools::getAllMatches('~~iUs', $this->getPage()); 
         $this->setPageToDefault();
     }
 

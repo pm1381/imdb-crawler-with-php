@@ -23,7 +23,6 @@ class Tools
 
     public static function getFirstMatch($regex, $page)
     {
-        // print_f($page);
         preg_match($regex, $page, $match);
         return trim($match[1]);
     }
