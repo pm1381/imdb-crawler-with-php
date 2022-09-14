@@ -5,7 +5,8 @@ namespace App\Models;
 class Person {
     private string $name;
     private string $url;
-    private string $picture;
+    private string $birthDate;
+    private string $description;
 
     public function __construct($name, $url)
     {
@@ -54,22 +55,40 @@ class Person {
     }
 
     /**
-     * Get the value of picture
+     * Get the value of birthDate
      */ 
-    public function getPicture()
+    public function getBirthDate()
     {
-        return $this->picture;
+        return $this->birthDate;
     }
 
     /**
-     * Set the value of picture
+     * Set the value of birthDate
      *
      * @return  self
-     */ 
-    public function setPicture($picture)
+    */ 
+    public function setBirthDate($birthDate)
     {
-        $this->picture = $picture;
+        $this->birthDate = $birthDate;
+        return $this;
+    }
 
+    /**
+     * Get the value of description
+    */ 
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set the value of description
+     *
+     * @return  self
+    */ 
+    public function setDescription($description)
+    {
+        $this->description = $description;
         return $this;
     }
 }

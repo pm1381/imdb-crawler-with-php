@@ -2,6 +2,7 @@
 
 use App\Databases\Database;
 use App\Databases\Generators\Pdo;
+use App\Models\Cast;
 use App\Models\Imdb;
 use App\Models\Movie;
 use App\Models\Series;
@@ -15,13 +16,11 @@ $search = $_GET['search'];
 
 $database = new Database();
 $database->databaseConnection(new Pdo());
-$imdb = new Imdb(new Series(), $search);
-// $imdb->singlePageSchema();
-// $imdb->findCompany();
-// $imdb->findAwards();
-// $imdb->findActors();
-// $imdb->findEpisodes();
-$imdb->getAllData();
-print_f($imdb->getWatchable());
+// $imdb = new Imdb(new Series(), $search);
+// $imdb->getAllData();
+// print_f($imdb->getWatchable());
+
+$cast = new Cast($search);
+$cast->getCastData();
 
 // notice : when creating a property as static , that property will be the same in your code for always;

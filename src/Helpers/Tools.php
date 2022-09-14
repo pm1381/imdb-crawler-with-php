@@ -41,4 +41,14 @@ class Tools
         }
         return $url;
     }
+
+    public static function checkUrlType($url)
+    {
+        if (strpos($url, DOMAIN) === false) {
+            return self::uniteUrls($url);
+        } else {
+            $slug = explode(DOMAIN, $url);
+            return self::uniteUrls($slug[1]);
+        }
+    }
 }
