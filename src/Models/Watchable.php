@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use App\Databases\Database;
+use App\Helpers\Tools;
 
 class Watchable extends Database
 {
     private int $ratingCount;
+    private int $specialId;
     private float $rating;
     private array $genre = [];
     private array $awards = [];
@@ -343,8 +345,10 @@ class Watchable extends Database
      */ 
     public function setUrl($url)
     {
+        $url = Tools::uniteUrls($url);
         $this->url = $url;
-
+        $urlArray = explode("/", $url);
+        $this->setSpecialId(explode("co", $urlArray[2])[1]);
         return $this;
     }
 
@@ -461,6 +465,26 @@ class Watchable extends Database
     public function setProducer($producer)
     {
         $this->producer = $producer;
+        return $this;
+    }
+
+    /**
+     * Get the value of specialId
+     */ 
+    public function getSpecialId()
+    {
+        return $this->specialId;
+    }
+
+    /**
+     * Set the value of specialId
+     *
+     * @return  self
+     */ 
+    public function setSpecialId($specialId)
+    {
+        $this->specialId = $specialId;
+
         return $this;
     }
 }
