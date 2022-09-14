@@ -348,7 +348,7 @@ class Watchable extends Database
         $url = Tools::uniteUrls($url);
         $this->url = $url;
         $urlArray = explode("/", $url);
-        $this->setSpecialId(explode("co", $urlArray[2])[1]);
+        $this->setSpecialId(intval(explode("tt", $urlArray[2])[1]));
         return $this;
     }
 
