@@ -89,7 +89,7 @@ class Imdb{
         if (array_key_exists('director', $result)) {
             $directors = [];
             foreach ($result['director'] as $eachDirector) {
-                $directors[] = new Cast($eachDirector['name'], $eachDirector['url']);
+                $directors[] = new Cast($eachDirector['url'], $eachDirector['name']);
             }
             $this->getWatchable()->setDirector($directors);
         }
@@ -97,7 +97,7 @@ class Imdb{
             $creators  = [];
             foreach ($result['creator'] as $creatorData) {
                 if (array_key_exists('name', $creatorData)) {
-                    $creators[]  = new Cast($creatorData['name'], $creatorData['url']);
+                    $creators[]  = new Cast($creatorData['url'], $creatorData['name']);
                 }
             }
             $this->getWatchable()->setWriter($creators);
@@ -172,7 +172,7 @@ class Imdb{
         $result = Tools::getAllMatches('~<td class=".*">\s*<a href="(.*)\?.*"\s*>\s*([a-zA-Z].*)<\/a>~iUs', $musicTable[0][0]);
         $data = [];$i = 0;
         foreach ($result[2] as $value) {
-            $data[] = new Cast(trim($value), trim($result[1][$i]));
+            $data[] = new Cast(trim($result[1][$i]), trim($value));
             $i++;
         }
         $this->getWatchable()->setMusicComposer($data);
@@ -210,7 +210,7 @@ class Imdb{
         $data = [];
         $i = 0;
         foreach ($result[1] as $value) {
-            $data[] = new Cast($result[2][$i], $value);
+            $data[] = new Cast($value, $result[2][$i]);
             $i++;
         }
         $this->getWatchable()->setProducer($data);
@@ -227,7 +227,7 @@ class Imdb{
             foreach ($result[4] as $value) {
                 $pictures = explode(", ", $result[2][$i]);
                 $pictures['preferedPic'] = $result[1][$i];
-                $actors[] = new Cast(trim($value), trim($result[3][$i]), $pictures);
+                $actors[] = new Cast(trim($result[3][$i]), trim($value), $pictures);
                 $i++;
             }
             $this->getWatchable()->setActors($actors);
@@ -267,7 +267,7 @@ class Imdb{
         $data = [];
         $i = 0;
         foreach ($result[1] as $value) {
-            $data[] = new Cast($result[2][$i], $value);
+            $data[] = new Cast($value, $result[2][$i]);
             $i++;
         }
         $this->getWatchable()->setDirector($data);
