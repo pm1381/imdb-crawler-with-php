@@ -8,6 +8,7 @@ class Watchable extends Database
 {
     private int $ratingCount;
     private float $rating;
+    private array $genre = [];
     private array $awards = [];
     private array $country = [];
     private array $director = [];
@@ -28,7 +29,6 @@ class Watchable extends Database
     private string $budget;
     private WatchableType $type;
 
-
     /**
      * Get the value of releseDate
      */ 
@@ -45,6 +45,26 @@ class Watchable extends Database
     public function setReleseDate($releseDate)
     {
         $this->releseDate = $releseDate;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of genre
+     */ 
+    public function getGenre()
+    {
+        return $this->genre;
+    }
+
+    /**
+     * Set the value of genre
+     *
+     * @return  self
+     */ 
+    public function setGenre($genre)
+    {
+        $this->genre = $genre;
 
         return $this;
     }
