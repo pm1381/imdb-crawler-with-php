@@ -10,13 +10,14 @@ class Imdb{
     private string $searchedUrl;
     private $page;
 
-    public function __construct(Watchable $watchable, $url = "")
+    public function __construct(Watchable $watchable, $url)
     {
         $this->watchable = $watchable;
         if ($url != "") {
             $this->setSearchedUrl($url);
             $this->setPage(Tools::manageCUrl([], [], $this->getSearchedUrl()));
-            $this->watchable->setUrl($url);
+            $watchableUrl = explode(DOMAIN, $url);
+            $this->watchable->setUrl($watchableUrl[1]);
         }      
     }
 
@@ -72,17 +73,19 @@ class Imdb{
         $this->getWatchable()->setUrl($result['url']);
         $this->getWatchable()->setTitle($result['name']);
         $this->getWatchable()->setPoster($result['image']);
-        $this->getWatchable()->setDescription($result['description']);
         $this->getWatchable()->setRating($result['aggregateRating']['ratingValue']);
         $this->getWatchable()->setRatingCount($result['aggregateRating']['ratingCount']);
-        $this->getWatchable()->setEsrb($result['contentRating']);
         $this->getWatchable()->setReleseDate($result['datePublished']);
         $this->getWatchable()->setTrailerUrl($result['trailer']['embedUrl']);
-        
         if (array_key_exists('duration', $result)) {
             $this->getWatchable()->setDuration($result['duration']);
         }
-        
+        if (array_key_exists('description', $result)) {
+            $this->getWatchable()->setDescription($result['description']);
+        }
+        if (array_key_exists('contentRating', $result)) {
+            $this->getWatchable()->setEsrb($result['contentRating']);
+        }
         if (array_key_exists('director', $result)) {
             $directors = [];
             foreach ($result['director'] as $eachDirector) {
@@ -90,7 +93,6 @@ class Imdb{
             }
             $this->getWatchable()->setDirector($directors);
         }
-
         if (array_key_exists('creator', $result)) {
             $creators  = [];
             foreach ($result['creator'] as $creatorData) {
@@ -100,7 +102,6 @@ class Imdb{
             }
             $this->getWatchable()->setWriter($creators);
         }
-        
         $genres = [];
         foreach ($result['genre'] as $value) {
             $genres[] = $value;
@@ -115,14 +116,6 @@ class Imdb{
         $result = json_decode($result, true);
         $this->setWatchableData($result);
     }
-
-    // public function findTitle($url = "")
-    // {
-    //     $this->checkEmptyUrl($url);
-    //     $result = Tools::getFirstMatch('~<h1 textlength="\d+" data-testid="hero-title-block__title" class=".*">(.*)<\/h1>~iUs', $this->getPage());
-    //     $this->getWatchable()->setTitle($result);
-    //     return $result;
-    // }
 
     public function findCountry($url = "")
     {
@@ -158,10 +151,7 @@ class Imdb{
     public function findCompany($url = "")
     {
         $this->checkEmptyUrl($url);
-        if ($url == "") {
-            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "companycredits/";
-            $this->setPage(Tools::manageCUrl([], [], $newUrl));
-        }
+        $this->checkNewPage("companycredits/", $url);
         $companiesList = Tools::getAllMatches('~<h4 class="dataHeaderWithBorder" id="production" name="production">Production Companies<\/h4>[\r\n]*\s*<ul .*<\/ul>~Us', $this->getPage());
         $result = Tools::getAllMatches('~<li>\s*<a href="(.*)\?.*"\s*>([A-Za-z0-9 ]*)<\/a>~iUs', $companiesList[0][0]);
         $data = [];
@@ -177,10 +167,7 @@ class Imdb{
     public function findMusicComposer($url = "")
     {
         $this->checkEmptyUrl($url);
-        if ($url == "") {
-            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "fullcredits/";
-            $this->setPage(Tools::manageCUrl([], [], $newUrl));
-        }
+        $this->checkNewPage("fullcredits/", $url);
         $musicTable = Tools::getAllMatches('~<h4\s*name="composer" id="composer"\s*class=".*">.*<\/h4>\s*<table.*<\/table>~iUs', $this->getPage());
         $result = Tools::getAllMatches('~<td class=".*">\s*<a href="(.*)\?.*"\s*>\s*([a-zA-Z].*)<\/a>~iUs', $musicTable[0][0]);
         $data = [];$i = 0;
@@ -195,10 +182,7 @@ class Imdb{
     public function findAwards($url = "")
     {
         $this->checkEmptyUrl($url);
-        if ($url == "") {
-            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "awards/";
-            $this->setPage(Tools::manageCUrl([], [], $newUrl));
-        }
+        $this->checkNewPage("awards/", $url);
         $result = Tools::getAllMatches('~<td class="title_award_outcome" rowspan="\d">\s*<b>(.*)<\/b><br \/>\s*<span class="award_category">(.*)<\/span>~iUs', $this->getPage());
         $data = [];
         $i = 0;
@@ -220,10 +204,7 @@ class Imdb{
     public function findProducers($url = "")
     {
         $this->checkEmptyUrl($url);
-        if ($url == "") {
-            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "fullcredits/";
-            $this->setPage(Tools::manageCUrl([], [], $newUrl));
-        }
+        $this->checkNewPage("fullcredits/", $url);
         $producersTable = Tools::getAllMatches('~<h4[\r\n]*\s*name="producer" id="producer".*<\/h4>[\r\n]*\s*<table .*<\/table>~iUs', $this->getPage());
         $result = Tools::getAllMatches('~<tr>[\r\n]*\s*<td class="name">[\r\n]*\s*<a href="(.*)\?.*"[\r\n]*\s*>\s*([a-zA-Z].*)[\r\n]+\s*.*~iUs', $producersTable[0][0]);
         $data = [];
@@ -256,10 +237,7 @@ class Imdb{
     public function findEpisodes($url = "")
     {
         $this->checkEmptyUrl($url);
-        if ($url == "") {
-            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "episodes?season=1";
-            $this->setPage(Tools::manageCUrl([], [], $newUrl));
-        }
+        $this->checkNewPage("episodes?season=1", $url);
         $seasonCount = $this->findNumberOfSeasons();
         $data = [];
         for ($i=1; $i <= $seasonCount; $i++) {
@@ -276,15 +254,14 @@ class Imdb{
                 $j++;
             }
         }
+        $this->getWatchable()->setSeasons($data);
+        $this->setPageToDefault();
     }
 
     public function findDirector($url = "")
     {
         $this->checkEmptyUrl($url);
-        if ($url == "") {
-            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "fullcredits/";
-            $this->setPage(Tools::manageCUrl([], [], $newUrl));
-        }
+        $this->checkNewPage("fullcredits/", $url);
         $directorTable = Tools::getAllMatches('~<h4\s*name="director" id="director"\s*.*<\/h4>\s*<table .*<\/table>~iUs', $this->getPage());
         $result = Tools::getAllMatches('~<tr>\s*<td class="name">\s*<a href="(.*)\?.*"\s*>\s*([a-zA-Z].*)[\r\n]+\s*.*~iUs', $directorTable[0][0]);
         $data = [];
@@ -324,7 +301,15 @@ class Imdb{
     {
         $selectBox = Tools::getAllMatches('~<select id="bySeason".*<\/select>~iUs', $this->getPage());
         $result = Tools::getAllMatches('~<option.*value="(.)">~iUs', $selectBox[0][0]);
-        return count($result) - 1;
+        return count($result[1]);
+    }
+
+    private function checkNewPage($param, $url)
+    {
+        if ($url == "") {
+            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . $param;
+            $this->setPage(Tools::manageCUrl([], [], $newUrl));
+        }
     }
 
     private function checkEmptyUrl($url)
