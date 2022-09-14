@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Series {
+class Series extends Watchable {
     private array $genre;
     private array $actors = [];
     private array $seasons = [];
