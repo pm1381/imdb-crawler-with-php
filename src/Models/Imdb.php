@@ -129,8 +129,9 @@ class Imdb{
             explode("(", $result);
         }
         trim($result);
-        $this->getWatchable()->setBudget($result);
-        return $result;
+        if ($result != "" && $result != null) {
+            $this->getWatchable()->setBudget($result);
+        }
     }
 
     public function findLanguages($url = "")
@@ -149,7 +150,6 @@ class Imdb{
             $this->setPage(Tools::manageCUrl([], [], $newUrl));
         }
         $companiesList = Tools::getAllMatches('~<h4 class="dataHeaderWithBorder" id="production" name="production">Production Companies<\/h4>[\r\n]*\s*<ul .*<\/ul>~Us', $this->getPage());
-        //---awards
         $result = Tools::getAllMatches('~<li>\s*<a href="(.*)\?.*"\s*>([A-Za-z0-9 ]*)<\/a>~iUs', $companiesList[0][0]);
         $data = [];
         $i = 0;
@@ -186,15 +186,14 @@ class Imdb{
             $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "awards/";
             $this->setPage(Tools::manageCUrl([], [], $newUrl));
         }
-        $result = Tools::getAllMatches('~<td class="title_award_outcome" rowspan="\d">[\r,\n]*\s+<b>(.*)<\/b><br \/>[\r,\n]*\s+<span class="award_category">(.*)<\/span>[\r,\n]*\s+<\/td>[\r,\n]*\s+<td class="award_description">[\r,\n]+\s+([a-zA-Z].*)<br \/>~iUs', $this->getPage());
+        $result = Tools::getAllMatches('~<td class="title_award_outcome" rowspan="\d">\s*<b>(.*)<\/b><br \/>\s*<span class="award_category">(.*)<\/span>~iUs', $this->getPage());
         $data = [];
         $i = 0;
-        if (count($result) == 4) {
+        if (count($result) == 3) {
             foreach ($result[1] as $value) {
                 $data[] = [
                     'status' => trim($value),
-                    'award' => trim($result[2][$i]),
-                    'for' => trim($result[3][$i]),
+                    'award' => trim($result[2][$i])
                 ];
                 $i++;
             }
@@ -227,12 +226,18 @@ class Imdb{
     public function findActors($url = "")
     {
         $this->checkEmptyUrl($url);
-        if ($url == "") {
-            $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . "fullcredits/";
-            $this->setPage(Tools::manageCUrl([], [], $newUrl));
+        $result = Tools::getAllMatches('~<div data-testid="title-cast-item" class="sc-36c36dd0-6 ewJBXI">.*<img.*src="(.*)" srcSet="(.*)".*<a data-testid="title-cast-item__actor" href="(.*)\?ref.*".*>(.*)<\/a>~iUs', $this->getPage()); 
+        if (count($result) == 5) {
+            $actors = [];
+            $i = 0;
+            foreach ($result[4] as $value) {
+                $pictures = explode(", ", $result[2][$i]);
+                $pictures['preferedPic'] = $result[1][$i];
+                $actors[] = new Cast(trim($value), trim($result[3][$i]), $pictures);
+                $i++;
+            }
+            $this->getWatchable()->setActors($actors);
         }
-       $castTable = Tools::getAllMatches('~~iUs', $this->getPage()); 
-        $this->setPageToDefault();
     }
 
     public function setPageToDefault()

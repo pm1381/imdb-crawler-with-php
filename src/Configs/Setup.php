@@ -16,8 +16,10 @@ $database = new Database();
 $database->databaseConnection(new Pdo());
 $imdb = new Imdb(new Movie(), $search);
 $imdb->singlePageSchema();
-$imdb->findCompany();
+// $imdb->findCompany();
+// $imdb->findAwards();
 // $imdb->getAllData();
-// print_f($imdb->getWatchable());
+$imdb->findActors();
+print_f($imdb->getWatchable());
 
 // notice : when creating a property as static , that property will be the same in your code for always;
