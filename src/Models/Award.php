@@ -21,14 +21,20 @@ class Award {
     public function getAwardData()
     {
         if ($this->getSpecialId() != null && $this->getSpecialId() != ""){
+            $award = [];
             for ($i=0; $i < count($this->awardHistory) ; $i++) { 
-                //$this->awardHistory[$i]
-                $url = DOMAIN . $this->getSlug() . "2022" . "/1/";
+                $current =  $this->awardHistory[$i];
+                $url = DOMAIN . $this->getSlug() . $current . "/1/";
                 $this->setPage(Tools::manageCUrl([], [], $url));
                 $this->findAwardYear();
-                $this->findAwardData();
+                $this->findAwardData($current, $award);
+                if ($i > 2) {
+                    break;
+                }
             }
+            $this->setPrizes($award);
         }
+        print_f($this->getPrizes());
     }
 
     public function findAwardYear()
@@ -37,7 +43,7 @@ class Award {
         $this->setYear($result);
     }
 
-    public function findAwardData()
+    public function findAwardData($current, &$award)
     {
         $result = Tools::getAllMatches('~{"primaryNominees":\s*.*{\s*.*"name":"(.*)".*"const":"(.*)".*"categoryName":(.*),.*"isWinner":(.*)}~iUs', $this->getPage());
         $data = [];
@@ -51,15 +57,13 @@ class Award {
             ];
             $i++;
         }
-        $award = [];
         $i = 0;
         foreach ($result[3] as $value) {
             if ($value != 'null') {
-                $award[$value][] = $data[$i];
+                $award[$current][$value][] = $data[$i];
             }
             $i++;
         }
-        $this->setPrizes($award);
     }
 
     private function awardInitData($award)
