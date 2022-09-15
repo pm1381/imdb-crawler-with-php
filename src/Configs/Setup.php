@@ -2,6 +2,7 @@
 
 use App\Databases\Database;
 use App\Databases\Generators\Pdo;
+use App\Models\Award;
 use App\Models\Cast;
 use App\Models\Imdb;
 use App\Models\Movie;
@@ -20,7 +21,9 @@ $database->databaseConnection(new Pdo());
 // $imdb->getAllData();
 // print_f($imdb->getWatchable());
 
-$cast = new Cast($search);
-$cast->getCastData();
+// $cast = new Cast($search);
+// $cast->getCastData();
 
+$award = new Award("emmys");
+$award->getAwardData();
 // notice : when creating a property as static , that property will be the same in your code for always;
