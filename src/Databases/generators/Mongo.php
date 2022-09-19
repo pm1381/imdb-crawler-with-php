@@ -25,7 +25,7 @@ class Mongo extends NoSql implements Generator
 
     public function setCollection($collection)
     {
-        $this->collection = $this->getConnection()->selectCollection("test", $collection);
+        $this->collection = $this->getConnection()->selectCollection(DB_NAME, $collection);
         // test is db name;
     }
 
@@ -154,10 +154,6 @@ class Mongo extends NoSql implements Generator
 
     private function manageWhere($whereArray, $operand= "and")
     {
-        // ['id' => 'parham'] // ['id' => [1,24,5,3]] // [['id' => 'p' , 'name' => 'd']] // [['id' => 'sma'], ['name' => 'ddd']]
-        // foreach ($whereArray as $key => $value) {
-            
-        // }
         $this->where = $whereArray;
     }
 
