@@ -3,3 +3,4 @@ composer.lock
 ./vs-code
 node_modules
 ./github
+.htaccess
