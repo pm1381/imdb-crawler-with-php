@@ -54,6 +54,6 @@ class Tools
 
     public static function getUrl()
     {
-        return $_SERVER['REQUEST_URI'];
+        return ORIGIN . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     }
 }

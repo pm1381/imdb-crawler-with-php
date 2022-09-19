@@ -2,11 +2,6 @@
 
 use App\Databases\Database;
 use App\Databases\Generators\Pdo;
-use App\Models\Award;
-use App\Models\Cast;
-use App\Models\Imdb;
-use App\Models\Movie;
-use App\Models\Series;
 
 define("DIR", "");
 date_default_timezone_set("Asia/Tehran");
