@@ -34,7 +34,6 @@ class Award {
             }
             $this->setPrizes($award);
         }
-        print_f($this->getPrizes());
     }
 
     public function findAwardYear()

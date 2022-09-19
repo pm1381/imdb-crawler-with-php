@@ -70,6 +70,7 @@ class Imdb{
     private function setWatchableData(array $result)
     {
         $this->getWatchable()->setType(new WatchableType($result['@type']));
+        // $this->setWatchableInstance();
         $this->getWatchable()->setUrl($result['url']);
         $this->getWatchable()->setTitle($result['name']);
         $this->getWatchable()->setPoster($result['image']);
@@ -309,6 +310,16 @@ class Imdb{
         if ($url == "") {
             $newUrl = CRAWLER_ON . $this->getWatchable()->getUrl() . $param;
             $this->setPage(Tools::manageCUrl([], [], $newUrl));
+        }
+    }
+
+    private function setWatchableInstance()
+    {
+        if ($this->getWatchable()->getType()->getValue() == "Movie") {
+            Tools::cast('App\Models\Movie', $this->watchable);
+            print_f($this->getWatchable(), true);
+        } else if ($this->getWatchable()->getType()->getValue() == "TVSeries") {
+            Tools::cast('Series', $this->watchable);
         }
     }
 

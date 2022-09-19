@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Imdb;
 use App\Helpers\Input;
+use App\Models\Watchable;
 
 class ImdbController {
 
@@ -11,7 +12,7 @@ class ImdbController {
     {
         $searched = Input::get('search');
         if (strpos($searched, CRAWLER_ON) !== false) {
-            // $imdb = new Imdb(new Series(), $searched);
+            // $imdb = new Imdb(new Watchable, $searched);
             // $imdb->getAllData();
             // $watchableData = $imdb->getWatchable();
             //going to insert it in mongo db;
