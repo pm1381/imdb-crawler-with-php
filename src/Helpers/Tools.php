@@ -51,4 +51,9 @@ class Tools
             return self::uniteUrls($slug[1]);
         }
     }
+
+    public static function getUrl()
+    {
+        return $_SERVER['REQUEST_URI'];
+    }
 }
