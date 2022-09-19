@@ -10,7 +10,8 @@
     "require": {
         "guzzlehttp/guzzle": "^7.4",
         "mongodb/mongodb": "^1.11",
-        "myclabs/php-enum": "^1.8"
+        "myclabs/php-enum": "^1.8",
+        "phroute/phroute": "^2.2"
     },
     "scripts": {
         "test": "./vendor/bin/phpunit --colors=always",

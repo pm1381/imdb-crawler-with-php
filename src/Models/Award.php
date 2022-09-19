@@ -200,8 +200,7 @@ class Award {
     */ 
     public function setPage($page)
     {
-        $this->page = $page;k
-
+        $this->page = $page;
         return $this;
     }
 }

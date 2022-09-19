@@ -12,8 +12,7 @@ define("DIR", "");
 date_default_timezone_set("Asia/Tehran");
 require_once 'src/Configs/Static.php';
 
-$action = $_SERVER['REQUEST_URI'];
-$search = $_GET['search'];
+// $search = $_GET['search'];
 
 $database = new Database();
 $database->databaseConnection(new Pdo());
@@ -24,6 +23,6 @@ $database->databaseConnection(new Pdo());
 // $cast = new Cast($search);
 // $cast->getCastData();
 
-$award = new Award("emmys");
-$award->getAwardData();
+// $award = new Award("emmys");
+// $award->getAwardData();
 // notice : when creating a property as static , that property will be the same in your code for always;

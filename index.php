@@ -5,4 +5,4 @@ ini_set('display_errors', 1);
 
 require __DIR__ . '/vendor/autoload.php';
 require_once 'src/Configs/Setup.php';
-// require_once 'src/Views/home.php';
+require_once 'src/Helpers/Router.php';
