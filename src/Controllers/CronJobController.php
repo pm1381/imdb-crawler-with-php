@@ -6,8 +6,8 @@ use App\Helpers\Input;
 
 class CronJobController {
 
-    public function insertToDb()
+    public function checkMovies()
     {
-        echo Input::get('search');
+        
     }
 }

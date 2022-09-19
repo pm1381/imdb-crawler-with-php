@@ -3,7 +3,7 @@ define('HOST_NAME', 'localhost');
 define("CONTROLLER_NAMESPACE", "App\Controllers");
 define('CRAWLER_ON', 'https://www.imdb.com');
 define('DOMAIN', "https://www.imdb.com");
-define('BASE_URI', 'http://localhost/project/imdb-crawler-with-php');
+define('BASE_URI', 'http://localhost/project/imdb-crawler-with-php/');
 define('ORIGIN', 'http://localhost');
 
 //---mongo database---//
