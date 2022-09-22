@@ -10,9 +10,8 @@ class Imdb{
     private string $searchedUrl;
     private $page;
 
-    public function __construct(Watchable $watchable, $url)
+    public function __construct($url)
     {
-        $this->watchable = $watchable;
         if ($url != "") {
             $this->setSearchedUrl($url);
             $this->setPage(Tools::manageCUrl([], [], $this->getSearchedUrl()));
@@ -69,8 +68,8 @@ class Imdb{
 
     private function setWatchableData(array $result)
     {
+        $this->setWatchableInstance($result['@type']);
         $this->getWatchable()->setType(new WatchableType($result['@type']));
-        // $this->setWatchableInstance();
         $this->getWatchable()->setUrl($result['url']);
         $this->getWatchable()->setTitle($result['name']);
         $this->getWatchable()->setPoster($result['image']);
@@ -313,13 +312,12 @@ class Imdb{
         }
     }
 
-    private function setWatchableInstance()
+    private function setWatchableInstance($type)
     {
-        if ($this->getWatchable()->getType()->getValue() == "Movie") {
-            Tools::cast('App\Models\Movie', $this->watchable);
-            print_f($this->getWatchable(), true);
-        } else if ($this->getWatchable()->getType()->getValue() == "TVSeries") {
-            Tools::cast('Series', $this->watchable);
+        if ($type == "Movie") {
+            $this->watchable = new Movie();
+        } else if ($type == "TVSeries") {
+            $this->watchable = new Series();
         }
     }
 
