@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\Databases\Database;
 use App\Helpers\Tools;
 use App\Models\Movie;
 
-class Imdb{
+class Imdb extends Database{
     private Watchable $watchable;
     private string $searchedUrl;
     private $page;
@@ -18,7 +19,12 @@ class Imdb{
             $this->setPage(Tools::manageCUrl([], [], $this->getSearchedUrl()));
             $watchableUrl = explode(DOMAIN, $url);
             $this->url = $watchableUrl[1];
-        }      
+        }
+    }
+
+    public function setDatabaseTable()
+    {
+        $this->showSelectedDb()->setTable('Watchable');
     }
 
     /**
@@ -88,19 +94,25 @@ class Imdb{
             $this->getWatchable()->setEsrb($result['contentRating']);
         }
         if (array_key_exists('director', $result)) {
-            $directors = [];
+            $directors = []; $ids = [];
             foreach ($result['director'] as $eachDirector) {
-                $directors[] = new Cast($eachDirector['url'], $eachDirector['name']);
+                $cast = new Cast($eachDirector['url'], $eachDirector['name']);
+                $directors[] = $cast;
+                $ids[] = $cast->getSpeciaId();
             }
+            $directors[] = $ids;
             $this->getWatchable()->setDirector($directors);
         }
         if (array_key_exists('creator', $result)) {
-            $creators  = [];
+            $creators  = []; $ids = [];
             foreach ($result['creator'] as $creatorData) {
                 if (array_key_exists('name', $creatorData)) {
-                    $creators[]  = new Cast($creatorData['url'], $creatorData['name']);
+                    $cast = new Cast($creatorData['url'], $creatorData['name']);
+                    $creators[]  = $cast;
+                    $ids[] = $cast->getSpeciaId(); 
                 }
             }
+            $creators[] = $ids;
             $this->getWatchable()->setWriter($creators);
         }
         $genres = [];
@@ -158,10 +170,14 @@ class Imdb{
         $result = Tools::getAllMatches('~<li>\s*<a href="(.*)\?.*"\s*>([A-Za-z0-9 ]*)<\/a>~iUs', $companiesList[0][0]);
         $data = [];
         $i = 0;
+        $ids = [];
         foreach ($result[1] as $val) {
-            $data[] = new Company(trim($val), trim($result[2][$i]));
+            $company = new Company(trim($val), trim($result[2][$i]));
+            $data[]  = $company;
+            $ids[] = $company->getSpecialId();
             $i++;
         }
+        $data[] = $ids;
         $this->getWatchable()->setCompany($data);
         $this->setPageToDefault();
     }
@@ -172,11 +188,14 @@ class Imdb{
         $this->checkNewPage("fullcredits/", $url);
         $musicTable = Tools::getAllMatches('~<h4\s*name="composer" id="composer"\s*class=".*">.*<\/h4>\s*<table.*<\/table>~iUs', $this->getPage());
         $result = Tools::getAllMatches('~<td class=".*">\s*<a href="(.*)\?.*"\s*>\s*([a-zA-Z].*)<\/a>~iUs', $musicTable[0][0]);
-        $data = [];$i = 0;
+        $data = [];$i = 0;$ids = [];
         foreach ($result[2] as $value) {
-            $data[] = new Cast(trim($result[1][$i]), trim($value));
+            $cast = new Cast(trim($result[1][$i]), trim($value));
+            $data[] = $cast;
+            $ids[] = $cast->getSpeciaId();
             $i++;
         }
+        $data[] = $ids;
         $this->getWatchable()->setMusicComposer($data);
         $this->setPageToDefault();
     }
@@ -210,11 +229,15 @@ class Imdb{
         $producersTable = Tools::getAllMatches('~<h4[\r\n]*\s*name="producer" id="producer".*<\/h4>[\r\n]*\s*<table .*<\/table>~iUs', $this->getPage());
         $result = Tools::getAllMatches('~<tr>[\r\n]*\s*<td class="name">[\r\n]*\s*<a href="(.*)\?.*"[\r\n]*\s*>\s*([a-zA-Z].*)[\r\n]+\s*.*~iUs', $producersTable[0][0]);
         $data = [];
+        $ids = [];
         $i = 0;
         foreach ($result[1] as $value) {
-            $data[] = new Cast($value, $result[2][$i]);
+            $cast = new Cast($value, $result[2][$i]);
+            $data[] = $cast;
+            $ids[] = $cast->getSpeciaId();
             $i++;
         }
+        $data[] = $ids;
         $this->getWatchable()->setProducer($data);
         $this->setPageToDefault();
     }
@@ -224,14 +247,17 @@ class Imdb{
         $this->checkEmptyUrl($url);
         $result = Tools::getAllMatches('~<div data-testid="title-cast-item" class="sc-36c36dd0-6 ewJBXI">.*<img.*src="(.*)" srcSet="(.*)".*<a data-testid="title-cast-item__actor" href="(.*)\?ref.*".*>(.*)<\/a>~iUs', $this->getPage()); 
         if (count($result) == 5) {
-            $actors = [];
+            $actors = [];$ids = [];
             $i = 0;
             foreach ($result[4] as $value) {
                 $pictures = explode(", ", $result[2][$i]);
                 $pictures['preferedPic'] = $result[1][$i];
-                $actors[] = new Cast(trim($result[3][$i]), trim($value), $pictures);
+                $cast = new Cast(trim($result[3][$i]), trim($value), $pictures);
+                $actors[] = $cast;
+                $ids[] = $cast->getSpeciaId();
                 $i++;
             }
+            $actors[] = $ids;
             $this->getWatchable()->setActors($actors);
         }
     }
@@ -266,12 +292,15 @@ class Imdb{
         $this->checkNewPage("fullcredits/", $url);
         $directorTable = Tools::getAllMatches('~<h4\s*name="director" id="director"\s*.*<\/h4>\s*<table .*<\/table>~iUs', $this->getPage());
         $result = Tools::getAllMatches('~<tr>\s*<td class="name">\s*<a href="(.*)\?.*"\s*>\s*([a-zA-Z].*)[\r\n]+\s*.*~iUs', $directorTable[0][0]);
-        $data = [];
+        $data = [];$ids = [];
         $i = 0;
         foreach ($result[1] as $value) {
-            $data[] = new Cast($value, $result[2][$i]);
+            $cast = new Cast($value, $result[2][$i]);
+            $data[] = $cast;
+            $ids[]  = $cast->getSpeciaId();
             $i++;
         }
+        $data[] = $ids;
         $this->getWatchable()->setDirector($data);
         $this->setPageToDefault();
     }
@@ -284,7 +313,7 @@ class Imdb{
         $this->findLanguages($url);
         $this->findPictures($url);
         $this->findCompany($url);
-        $this->findAwards($url);
+        // $this->findAwards($url);
         $this->findProducers($url);
         $this->findMusicComposer($url);
         $this->findActors($url);
