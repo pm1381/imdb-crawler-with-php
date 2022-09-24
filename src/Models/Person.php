@@ -7,8 +7,8 @@ use App\Databases\Database;
 class Person extends Database {
     private string $name;
     private string $url;
-    private string $birthDate;
-    private string $description;
+    private $birthDate = null;
+    private $description = null;
 
     public function __construct($name, $url)
     {

@@ -4,9 +4,9 @@ namespace App\Controllers;
 
 use App\Helpers\Input;
 
-class CronJobController {
+class HomeController {
 
-    public function checkMovies()
+    public function home()
     {
         
     }

@@ -10,7 +10,7 @@ class Company extends Database {
     private string $url;
     private string $specialId;
 
-    public function __construct($url, $name="")
+    public function __construct($url="", $name="")
     {
         $url = Tools::uniteUrls($url);
         $this->setUrl($url);
