@@ -17,6 +17,11 @@ class Cast extends Person {
         $this->setPictures($pictures);
     }
 
+    public function setDatabaseTable()
+    {
+        $this->showSelectedDb()->setTable('Cast');
+    }
+
     /**
      * Get the value of speciaId
     */ 

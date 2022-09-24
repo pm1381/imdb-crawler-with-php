@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
-class Person {
+use App\Databases\Database;
+
+class Person extends Database {
     private string $name;
     private string $url;
     private string $birthDate;

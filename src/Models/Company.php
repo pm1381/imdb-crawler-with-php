@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Databases\Database;
 use App\Helpers\Tools;
 
-class Company {
+class Company extends Database {
     private string $name;
     private string $url;
     private string $specialId;
@@ -15,6 +16,11 @@ class Company {
         $this->setUrl($url);
         $this->setName($name);
         $this->setSpecialId($url);
+    }
+
+    public function setDatabaseTable()
+    {
+        $this->showSelectedDb()->setTable('Company');
     }
 
     /**
