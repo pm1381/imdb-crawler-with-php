@@ -9,7 +9,7 @@ class Cast extends Person {
     private array $pictures = [];
     private string $page;
 
-    public function __construct($url, $name = "",  $pictures = [])
+    public function __construct($url="", $name = "",  $pictures = [])
     {
         $url = Tools::checkUrlType($url);
         parent::__construct($name, $url);
