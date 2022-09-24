@@ -15,6 +15,7 @@ class ImdbController {
             $imdb = new Imdb($searched);
             $imdb->getAllData();
             $watchableData = $imdb->getWatchable();
+            print_f($watchableData, true);
             //going to insert it in mongo db;
         } else {
             print_f("wrong input");

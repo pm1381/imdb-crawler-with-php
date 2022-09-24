@@ -18,6 +18,6 @@ $database->databaseConnection(new Pdo());
 // $cast = new Cast($search);
 // $cast->getCastData();
 
-// $award = new Award("emmys");
-// $award->getAwardData();
+// $event = new Event("emmys");
+// $event->getAwardData();
 // notice : when creating a property as static , that property will be the same in your code for always;

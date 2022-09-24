@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Helpers\Tools;
 
-class Award {
+class Event {
     private string $awardTitle; // for example  oscars or golden globe
     private string $slug; // /event/ev00003/
     private string $specialId; // 00003

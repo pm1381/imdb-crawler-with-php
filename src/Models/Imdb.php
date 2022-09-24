@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Helpers\Tools;
-use APP\Models\Movie;
+use App\Models\Movie;
 
 class Imdb{
     private Watchable $watchable;
     private string $searchedUrl;
     private $page;
+    private string $url;
 
     public function __construct($url)
     {
@@ -16,7 +17,7 @@ class Imdb{
             $this->setSearchedUrl($url);
             $this->setPage(Tools::manageCUrl([], [], $this->getSearchedUrl()));
             $watchableUrl = explode(DOMAIN, $url);
-            $this->watchable->setUrl($watchableUrl[1]);
+            $this->url = $watchableUrl[1];
         }      
     }
 
@@ -128,14 +129,15 @@ class Imdb{
     public function findBudget($url = "")
     {
         $this->checkEmptyUrl($url);
-        $result = Tools::getAllMatches('~<span class="ipc-metadata-list-item__label">Budget</span><div class="ipc-metadata-list-item__content-container"><ul class="ipc-inline-list ipc-inline-list--show-dividers ipc-inline-list--inline ipc-metadata-list-item__list-content base" role="presentation"><li role="presentation" class="ipc-inline-list__item"><span class="ipc-metadata-list-item__list-content-item">(.*)</span>~iUs', $this->getPage());
+        $result = Tools::getAllMatches('~<span class="ipc-metadata-list-item__label">Budget<\/span><div class="ipc-metadata-list-item__content-container"><ul class="ipc-inline-list ipc-inline-list--show-dividers ipc-inline-list--inline ipc-metadata-list-item__list-content base" role="presentation"><li role="presentation" class="ipc-inline-list__item"><span class="ipc-metadata-list-item__list-content-item">(.*)<\/span>~sUi', $this->getPage());
         if (count($result) == 2 && count($result[1]) > 0) {
-            if (strpos($result[1], '(') !== false) {
-                explode("(", $result[1]);
+            $res = $result[1][0];
+            if (strpos($res, '(') !== false) {
+                $res = explode("(", $res)[0];
             }
-            trim($result[1]);
-            if ($result[1] != "" && $result[1] != null) {
-                $this->getWatchable()->setBudget($result[1]);
+            trim($res);
+            if ($res != "" && $res != null) {
+                $this->getWatchable()->setBudget($res);
             }
         }
     }
@@ -319,6 +321,7 @@ class Imdb{
         } else if ($type == "TVSeries") {
             $this->watchable = new Series();
         }
+        $this->getWatchable()->setUrl($this->url);
     }
 
     private function checkEmptyUrl($url)
