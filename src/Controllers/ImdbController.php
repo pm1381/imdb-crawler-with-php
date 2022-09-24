@@ -8,7 +8,7 @@ use App\Models\Watchable;
 
 class ImdbController {
 
-    public function addToDb()
+    public function addFilmToDb()
     {
         $searched = Input::get('search');
         if (strpos($searched, CRAWLER_ON) !== false) {
