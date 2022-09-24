@@ -23,10 +23,9 @@ class Mongo extends NoSql implements Generator
 
     public function execution($query){}
 
-    public function setCollection($collection)
+    public function setCollection()
     {
-        $this->collection = $this->getConnection()->selectCollection(DB_NAME, $collection);
-        // test is db name;
+        $this->collection = $this->getConnection()->selectCollection(DB_NAME, $this->getCollectionName());
     }
 
     public function getCollection()
@@ -71,6 +70,7 @@ class Mongo extends NoSql implements Generator
 
     public function insert($data)
     {
+        $this->setCollection();
         try {
             $result = $this->getCollection()->insertOne($data);
         } catch (\Throwable $th) {
@@ -82,6 +82,7 @@ class Mongo extends NoSql implements Generator
 
     public function insertMany($data)
     {
+        $this->setCollection();
         try {
             $result = $this->getCollection()->insertMany($data);
         } catch (\Throwable $th) {
@@ -93,6 +94,7 @@ class Mongo extends NoSql implements Generator
 
     public function updateOne($data)
     {
+        $this->setCollection();
         try {
             $filter = $this->manageWhere($this->getWhere());
             $update = ['$set' => $data];
@@ -106,6 +108,7 @@ class Mongo extends NoSql implements Generator
 
     public function update($data)
     {
+        $this->setCollection();
         try {
             $filter = $this->manageWhere($this->getWhere());
             $update = ['$set' => $data];
@@ -119,6 +122,7 @@ class Mongo extends NoSql implements Generator
 
     public function delete()
     {
+        $this->setCollection();
         try {
             $filter = $this->manageWhere($this->getWhere());
             $result = $this->getCollection()->deleteMany($filter);
@@ -131,6 +135,7 @@ class Mongo extends NoSql implements Generator
 
     public function deleteOne()
     {
+        $this->setCollection();
         try {
             $filter = $this->manageWhere($this->getWhere());
             $result = $this->getCollection()->deleteOne($filter);
@@ -159,6 +164,7 @@ class Mongo extends NoSql implements Generator
 
     public function select()
     {
+        $this->setCollection();
         try {
             $filter = $this->manageWhere($this->getWhere());
             $this->findCount($filter);
@@ -173,6 +179,7 @@ class Mongo extends NoSql implements Generator
     public function replace($data)
     {
         // does not need $set -- like UPDATEONE() appears on one element.
+        $this->setCollection();
         try {
             $filter = $this->manageWhere($this->getWhere());
             $result = $this->getCollection()->replaceOne($filter, $data);

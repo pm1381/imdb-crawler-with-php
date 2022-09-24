@@ -8,8 +8,14 @@ class NoSql extends Db
 {
 
     private $queryResult;
+    private $collectionName;
 
     public function __construct(){}
+
+    public function setTable($collection)
+    {
+        $this->collectionName = $collection;
+    }
 
     public function setQueryResult($result)
     {
@@ -19,5 +25,10 @@ class NoSql extends Db
     public function getResult()
     {
         return $this->queryResult;
+    }
+
+    public function getCollectionName()
+    {
+        return $this->collectionName;
     }
 }
