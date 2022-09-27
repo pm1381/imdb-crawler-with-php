@@ -96,7 +96,7 @@ class Mongo extends NoSql implements Generator
     {
         $this->setCollection();
         try {
-            $filter = $this->manageWhere($this->getWhere());
+            $filter = $this->getWhere();
             $update = ['$set' => $data];
             $result = $this->getCollection()->updateOne($filter, $update);
         } catch (\Throwable $th) {
@@ -110,7 +110,7 @@ class Mongo extends NoSql implements Generator
     {
         $this->setCollection();
         try {
-            $filter = $this->manageWhere($this->getWhere());
+            $filter = $this->getWhere();
             $update = ['$set' => $data];
             $result = $this->getCollection()->updateMany($filter, $update);
         } catch (\Throwable $th) {
@@ -124,7 +124,7 @@ class Mongo extends NoSql implements Generator
     {
         $this->setCollection();
         try {
-            $filter = $this->manageWhere($this->getWhere());
+            $filter = $this->getWhere();
             $result = $this->getCollection()->deleteMany($filter);
         } catch (\Throwable $th) {
             $this->setConnectionError($th);
@@ -137,7 +137,7 @@ class Mongo extends NoSql implements Generator
     {
         $this->setCollection();
         try {
-            $filter = $this->manageWhere($this->getWhere());
+            $filter = $this->getWhere();
             $result = $this->getCollection()->deleteOne($filter);
         } catch (\Throwable $th) {
             $this->setConnectionError($th);
@@ -157,7 +157,7 @@ class Mongo extends NoSql implements Generator
         return $this;
     }
 
-    private function manageWhere($whereArray, $operand= "and")
+    private function manageWhere($whereArray)
     {
         $this->where = $whereArray;
     }
@@ -181,7 +181,7 @@ class Mongo extends NoSql implements Generator
         // does not need $set -- like UPDATEONE() appears on one element.
         $this->setCollection();
         try {
-            $filter = $this->manageWhere($this->getWhere());
+            $filter = $this->getWhere();
             $result = $this->getCollection()->replaceOne($filter, $data);
         } catch (\Throwable $th) {
             $this->setConnectionError($th);

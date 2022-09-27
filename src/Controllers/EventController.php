@@ -34,7 +34,17 @@ class EventController {
                     'prize' => $awardTitle,
                     'nominees' => $eachnomineesArray
                 ];
-                $event->manageInsertQuery($data);
+                $event->manageSelectQuery(
+                    ['specialId' => 1, 'eventTitle' => 1], [],
+                    ['eventTitle' => $event->getAwardTitle(), 'year' => $year, 'prize' => $awardTitle]
+                );
+                if ($event->showSelectedDb()->getCount()) {
+                    $event->showSelectedDb()
+                        ->where(['eventTitle' => $event->getAwardTitle(), 'year' => $year, 'prize' => $awardTitle])
+                        ->replace($data);
+                } else {
+                    $event->manageInsertQuery($data);
+                }
             }
         }
     }

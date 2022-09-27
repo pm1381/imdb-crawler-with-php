@@ -126,6 +126,7 @@ class Imdb extends Database{
     {
         $this->checkEmptyUrl($url);
         $result = Tools::getFirstMatch('~<script type="application\/ld\+json">(.*)<\/script>~iUs', $this->getPage());        
+        print_f($result, true);
         $result = json_decode($result, true);
         $this->setWatchableData($result);
     }
@@ -307,20 +308,21 @@ class Imdb extends Database{
 
     public function getAllData($url = "")
     {
+        set_time_limit(600);
         $this->singlePageSchema($url);
-        $this->findCountry($url);
-        $this->findBudget($url);
-        $this->findLanguages($url);
-        $this->findPictures($url);
-        $this->findCompany($url);
-        // $this->findAwards($url);
-        $this->findProducers($url);
-        $this->findMusicComposer($url);
-        $this->findActors($url);
-        if ($this->getWatchable()->getType()->getValue() != "Movie") {
-            $this->findEpisodes($url);
-            $this->findDirector($url);
-        }
+        // $this->findCountry($url);
+        // $this->findBudget($url);
+        // $this->findLanguages($url);
+        // $this->findPictures($url);
+        // $this->findCompany($url);
+        // // $this->findAwards($url);
+        // $this->findProducers($url);
+        // $this->findMusicComposer($url);
+        // $this->findActors($url);
+        // if ($this->getWatchable()->getType()->getValue() != "Movie") {
+        //     $this->findEpisodes($url);
+        //     $this->findDirector($url);
+        // }
     }
 
     private function setPageToDefault()

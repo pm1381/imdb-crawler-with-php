@@ -16,7 +16,6 @@ class ImdbController {
             $imdb->setDatabaseTable();
             $imdb->getAllData();
             $watchableData = $imdb->getWatchable();
-            //going to insert it in mongo db;
             $data = [
                 'genre' => $watchableData->getGenre(),
                 'ratingCount' => $watchableData->getRatingCount(),
@@ -42,7 +41,13 @@ class ImdbController {
                 'specialId' => $watchableData->getSpecialId(),
                 'actor' => end($watchableData->getActors())
             ];
-            $imdb->manageInsertQuery($data);
+            $imdb->manageSelectQuery(['url' => 1, 'specialId' => 1], [], ['specialId'  => $watchableData->getSpecialId()]);
+            if ($imdb->showSelectedDb()->getCount()) {
+                $imdb->showSelectedDb()->where(['specialId' => $watchableData->getSpecialId()])->replace($data);
+            } else {
+                $imdb->manageInsertQuery($data);
+            }
+            print_f("done successfully");
         } else {
             print_f("wrong input");
         }
