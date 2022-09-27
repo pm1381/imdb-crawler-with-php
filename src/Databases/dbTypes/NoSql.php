@@ -22,7 +22,7 @@ class NoSql extends Db
         $this->queryResult = $result;
     }
 
-    public function getResult()
+    public function getQueryResult()
     {
         return $this->queryResult;
     }

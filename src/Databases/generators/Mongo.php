@@ -166,7 +166,7 @@ class Mongo extends NoSql implements Generator
     {
         $this->setCollection();
         try {
-            $filter = $this->manageWhere($this->getWhere());
+            $filter = $this->getWhere();
             $this->findCount($filter);
             $result = $this->getCollection()->find($filter, $this->getRow());
         } catch (\Throwable $th) {

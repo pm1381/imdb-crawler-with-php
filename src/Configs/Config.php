@@ -10,6 +10,6 @@ define('ORIGIN', 'http://localhost');
 define('MONGO_DB_NAME', '');
 
 //---mysql database---//
-define('DB_NAME', '');
+define('DB_NAME', 'Imdb');
 define('USERNAME', '');
 define('PASSWORD', '');
