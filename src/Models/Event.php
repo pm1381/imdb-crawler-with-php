@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Databases\Database;
 use App\Helpers\Tools;
 
-class Event {
+class Event extends Database {
     private string $awardTitle; // for example  oscars or golden globe
     private string $slug; // /event/ev00003/
     private string $specialId; // 00003
@@ -18,6 +19,11 @@ class Event {
         $this->awardInitData($award);
     }
 
+    public function setDatabaseTable()
+    {
+        $this->showSelectedDb()->setTable('Event');
+    }
+
     public function getAwardData()
     {
         if ($this->getSpecialId() != null && $this->getSpecialId() != ""){
@@ -26,9 +32,8 @@ class Event {
                 $current =  $this->awardHistory[$i];
                 $url = DOMAIN . $this->getSlug() . $current . "/1/";
                 $this->setPage(Tools::manageCUrl([], [], $url));
-                $this->findAwardYear();
                 $this->findAwardData($current, $award);
-                if ($i > 2) {
+                if ($i > 24) {
                     break;
                 }
             }
@@ -51,8 +56,8 @@ class Event {
             $specialId = Tools::getFirstMatch('~^.*(\d+)$~iUm', trim($value));
             $data[] = [
                 'specialId' => $specialId,
-                'name' => trim($result[1][$i]),
-                'winner' => $result[4][$i]
+                'winner' => $result[4][$i],
+                'name' => $result[2][$i]
             ];
             $i++;
         }
@@ -68,7 +73,7 @@ class Event {
     private function awardInitData($award)
     {
         $nominationPage = Tools::manageCUrl([], [], DOMAIN . "/" . $award . "/nominations/");
-        $pageresult = Tools::getFirstMatch('~<title>(.*)</title>~iUs', $nominationPage); 
+        $pageresult = Tools::getFirstMatch('~<title>(.*)</title>~iUs', $nominationPage);
         if (strpos($pageresult, "404") !== false) {
             $nominationPage = Tools::manageCUrl([], [], DOMAIN . "/awards-central/" . $award . "/");
             $pageresult = Tools::getAllMatches('~<title>(.*)</title>~iUs', $nominationPage); 
