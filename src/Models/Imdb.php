@@ -126,7 +126,6 @@ class Imdb extends Database{
     {
         $this->checkEmptyUrl($url);
         $result = Tools::getFirstMatch('~<script type="application\/ld\+json">(.*)<\/script>~iUs', $this->getPage());        
-        print_f($result, true);
         $result = json_decode($result, true);
         $this->setWatchableData($result);
     }

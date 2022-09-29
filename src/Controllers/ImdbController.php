@@ -16,6 +16,7 @@ class ImdbController {
             $imdb->setDatabaseTable();
             $imdb->getAllData();
             $watchableData = $imdb->getWatchable();
+            print_f($watchableData, true);
             $data = [
                 'genre' => $watchableData->getGenre(),
                 'ratingCount' => $watchableData->getRatingCount(),
